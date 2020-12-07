@@ -1,6 +1,30 @@
 import utils.utils as utils
 
 
+def parse_bag_rules():
+    rules = utils.open_file('bag-rules.txt')
+
+    bag_rules = {}
+
+    for rule in rules:
+        rule_parts = rule.split('contain')
+        bag_key = rule_parts.pop(0).replace(' bags ', '')
+        bags_contained = rule_parts.pop(0).split(',')
+
+        this_bag = {}
+
+        for bag in bags_contained:
+            bag_parts = bag.strip('. ').split(' ', 1)
+            bag_quantity = bag_parts[0]
+            bag_color = bag_parts[1].replace(' bags', '').replace(' bag', '')
+
+            this_bag[bag_color] = bag_quantity
+
+        bag_rules[bag_key] = this_bag
+
+    return bag_rules
+
+
 # PART ONE #
 verified_bags = []
 
@@ -20,26 +44,7 @@ def find_bags_with_bag(bag, bag_rules):
     return bags_with_bag
 
 
-rules = utils.open_file('bag-rules.txt')
-
-bag_rules = {}
-
-for rule in rules:
-    rule_parts = rule.split('contain')
-    bag_key = rule_parts.pop(0).replace(' bags ', '')
-    bags_contained = rule_parts.pop(0).split(',')
-
-    this_bag = {}
-
-    for bag in bags_contained:
-        bag_parts = bag.strip('. ').split(' ', 1)
-        bag_quantity = bag_parts[0]
-        bag_color = bag_parts[1].replace(' bags', '').replace(' bag', '')
-
-        this_bag[bag_color] = bag_quantity
-
-    bag_rules[bag_key] = this_bag
-
+bag_rules = parse_bag_rules()
 bags_found = find_bags_with_bag('shiny gold', bag_rules)
 bags_found = list(dict.fromkeys(bags_found))
 print(len(bags_found))
